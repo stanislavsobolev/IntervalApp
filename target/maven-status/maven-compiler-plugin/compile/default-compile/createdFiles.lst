@@ -1,9 +1,10 @@
-com\sobolev\controller\IntervalDataServicePublisher.class
-com\sobolev\service\IntervalDataService.class
-com\sobolev\TestFunctionality.class
 com\sobolev\Jackson2Example.class
 com\sobolev\model\Interval.class
 com\sobolev\service\PostgreSQLConnectorService.class
-com\sobolev\service\OptimizeIntervalsService.class
 com\sobolev\BasicSpringClassRunner.class
+com\sobolev\manager\DatabaseConnectionManager.class
+com\sobolev\controller\IntervalDataServicePublisher.class
+com\sobolev\service\IntervalDataService.class
+com\sobolev\TestFunctionality.class
+com\sobolev\service\OptimizeIntervalsService.class
 com\sobolev\controller\IntervalDataController.class
