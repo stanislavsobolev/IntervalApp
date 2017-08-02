@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,14 +16,31 @@ public class IntervalDataService {
     private OptimizeIntervalsService optimizeService;
     private PostgreSQLConnectorService connectorService;
 
-    private final String SQL_SELECT = "SELECT * FROM test_interval WHERE (start_i BETWEEN ? AND ?) OR (end_i BETWEEN ? AND ?)";
-    private final String SQL_DELETE = "DELETE FROM test_interval WHERE (start_i BETWEEN ? AND ?) OR (end_i BETWEEN ? AND ?)";
+    private final String SQL_SELECT = "SELECT * FROM test_interval";
+    private final String SQL_DELETE = "DELETE FROM test_interval";
+    private final String WHERE = " WHERE (start_i BETWEEN ? AND ?) OR (end_i BETWEEN ? AND ?)";
     private final String SQL_INSERT = "INSERT INTO test_interval VALUES(?, ?)";
 
     public IntervalDataService() {
     }
 
-    public void insertNewIntegerIntervals(List<Interval> intervals) {
+    /**
+    *
+    * InsertNewIntegerIntervals will get, optimize and update rows which
+    * meet the condition of intervals overlapping
+    *
+    * Two lists are being processed:
+    * 1. Interval list sent over POST request
+    * 2. Interval list stored in DB and meeting the overlap condition
+    *
+    * They both optimized, united into single list and stored into DB instead of
+    * old interval list
+    *
+    * @Note Interval list in DB will be always optimized if third-party applications
+    * use /interval/subscribe of IntervalApp method instead of updating data by themselves directly
+    * In this case there will be no need to use periodic optimizeAllData() method
+     */
+    public List<Interval> insertNewIntegerIntervals(List<Interval> intervals) {
         PreparedStatement stmt;
         ResultSet rs;
 
@@ -32,14 +50,14 @@ public class IntervalDataService {
 
         try (Connection con = connectorService.establishConnectionToDB()) {
             con.setAutoCommit(false);
-            stmt = createPreparedStatement(con, SQL_SELECT, minimalInt, maximalInt, minimalInt, maximalInt);
+            stmt = createPreparedStatement(con, SQL_SELECT + WHERE, minimalInt, maximalInt, minimalInt, maximalInt);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 optimizedIntervals.add(new Interval(rs.getInt(1), rs.getInt(2)));
             }
 
             optimizedIntervals = optimizeService.optimize(optimizedIntervals);
-            createPreparedStatement(con, SQL_DELETE, minimalInt, maximalInt, minimalInt, maximalInt).executeUpdate();
+            createPreparedStatement(con, SQL_DELETE + WHERE, minimalInt, maximalInt, minimalInt, maximalInt).executeUpdate();
 
             stmt = createPreparedStatement(con, SQL_INSERT);
             for(Interval interval : optimizedIntervals) {
@@ -51,6 +69,40 @@ public class IntervalDataService {
             stmt.close();
             con.commit();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return optimizedIntervals;
+    }
+
+    /**
+    * We assume that third-party applications may update Intervals data directly, avoiding /subscribe service
+    * And to guarantee data optimization application will periodically call optimizeAllData() method
+    *
+    * @Important Performance can be increased if update data using /subscribe service of IntervalApp
+     */
+    public void optimizeAllData() {
+        PreparedStatement stmt;
+        ResultSet rs;
+        List<Interval> optimizedIntervals;
+
+        try(Connection con = connectorService.establishConnectionToDB()) {
+            con.setAutoCommit(false);
+            rs = createPreparedStatement(con, SQL_SELECT).executeQuery();
+            optimizedIntervals = new ArrayList<>();
+            while (rs.next()) {
+                optimizedIntervals.add(new Interval(rs.getInt(1), rs.getInt(2)));
+            }
+            optimizedIntervals = optimizeService.optimize(optimizedIntervals);
+            stmt = createPreparedStatement(con, SQL_INSERT);
+            for(Interval interval : optimizedIntervals) {
+                stmt.setInt(1, interval.getStartI());
+                stmt.setInt(2, interval.getEndI());
+                stmt.addBatch();
+            }
+            stmt.addBatch();
+            con.commit();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

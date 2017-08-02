@@ -8,6 +8,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class IntervalDataController {

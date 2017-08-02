@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.naming.NamingException;
+import java.io.IOException;
 import java.sql.*;
 
 @Service
