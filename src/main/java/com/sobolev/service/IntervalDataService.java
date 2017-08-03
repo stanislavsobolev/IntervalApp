@@ -2,6 +2,7 @@ package com.sobolev.service;
 
 import com.sobolev.model.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Scope(value = "prototype")
 @RequestScope
 public class IntervalDataService {
 

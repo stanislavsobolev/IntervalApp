@@ -3,6 +3,7 @@ com\sobolev\model\Interval.class
 com\sobolev\service\PostgreSQLConnectorService.class
 com\sobolev\BasicSpringClassRunner.class
 com\sobolev\manager\DatabaseConnectionManager.class
+com\sobolev\manager\IntervalsOptimizationManager.class
 com\sobolev\controller\IntervalDataServicePublisher.class
 com\sobolev\service\IntervalDataService.class
 com\sobolev\TestFunctionality.class

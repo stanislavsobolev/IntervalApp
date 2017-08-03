@@ -1,13 +1,17 @@
 package com.sobolev.manager;
 
 import com.sobolev.service.PostgreSQLConnectorService;
+import com.sobolev.wrapper.PostgreSQLServiceBeanWrapper;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,6 +29,8 @@ public class DatabaseConnectionManager {
     private final int SECOND = 1000;
     private Integer failCounter = 0;
 
+    @Autowired
+    PostgreSQLConnectorService connectorService;
     Connection con;
 
     public DatabaseConnectionManager() {
@@ -41,7 +47,8 @@ public class DatabaseConnectionManager {
     public void doConnectionCheck() {
         if (con == null) {
             try {
-                con = this.getConnectorService().establishConnectionToDB();
+                System.out.println("OKAY");
+                con = connectorService.establishConnectionToDB();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -49,7 +56,6 @@ public class DatabaseConnectionManager {
         try {
             if (con.isValid(SECOND)) {
                 failCounter = 0;
-                log.info("Connection to database exist");
             }
             if (!con.isValid(SECOND)) {
                 failCounter++;
@@ -65,7 +71,12 @@ public class DatabaseConnectionManager {
     }
 
     @Bean
-    public PostgreSQLConnectorService getConnectorService() {
+    public PostgreSQLConnectorService postgreSQLConnectorService() {
         return new PostgreSQLConnectorService();
+    }
+
+    @Bean
+    public PostgreSQLServiceBeanWrapper getConnectorService() {
+        return new PostgreSQLServiceBeanWrapper(connectorService);
     }
 }

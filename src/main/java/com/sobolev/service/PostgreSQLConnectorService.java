@@ -1,5 +1,6 @@
 package com.sobolev.service;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.sql.*;
 
 @Service
+@Scope(value = "prototype")
 @RequestScope
 public class PostgreSQLConnectorService {
 

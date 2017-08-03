@@ -2,6 +2,7 @@ F:\Java\projects\MavenProject\src\main\java\com\sobolev\BasicSpringClassRunner.j
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\controller\IntervalDataController.java
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\controller\IntervalDataServicePublisher.java
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\manager\DatabaseConnectionManager.java
+F:\Java\projects\MavenProject\src\main\java\com\sobolev\manager\IntervalsOptimizationManager.java
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\model\Interval.java
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\Jackson2Example.java
 F:\Java\projects\MavenProject\src\main\java\com\sobolev\TestFunctionality.java
