@@ -3,7 +3,7 @@
 This is an application for optimizing integer intervals stored in database.
 Database intervals can be modified via IntervalApp REST service or using third-party applications.
 
-Technologies used:
+**Technologies used:**
 1. Java 7
 2. SQL (avoided using specific HQL\JPQL)
 3. PostgreSQL 9.5 as DBMS
@@ -11,7 +11,7 @@ Technologies used:
 5. Spring Boot v.1.5.3 - to start application in fast and simple way. No need to use Tomcat explicitly.
 6. Log4j - logging api
 
-User guide:
+**User guide:**
 1. Clone application and open it with any IDE
 2. Application default port 8080 and context path /interval. These values stored in rexources/application.properties
 file and can be changed if needed
@@ -24,7 +24,7 @@ to add new data by any application. This will guarantee that intervals will be a
 
 --------------
 
-Components table with logic explanations:
+**Components table with logic explanations:**
 
 | Class                        | Description                                                                      |
 | :--------------------------- | :------------------------------------------------------------------------------- |
@@ -50,3 +50,6 @@ Components table with logic explanations:
 |                              | was potentially modified by third party applications                             |
 | OptimizeIntervalsService     | Support class providing optimization logic                                       |
 | PostgreSQLConnectorService   | Support class providing db connection                                            |
+
+**In case of any questions please feel free to contact me via Skype:**
+sobolev_stanislav

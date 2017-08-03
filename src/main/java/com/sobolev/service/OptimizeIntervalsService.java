@@ -17,8 +17,17 @@ public class OptimizeIntervalsService {
 
     public List<Interval> optimize(List<Interval> intervals) {
         preparedIntervalsList = new ArrayList<>();
-        optimizeFirstElement(intervals);
-        Collections.sort(preparedIntervalsList);
+        if(intervals != null && !intervals.isEmpty()) {
+            for (Interval i : intervals) {
+                if (i.getStartI() > i.getEndI()) {
+                    int startI = i.getEndI();
+                    i.setEndI(i.getStartI());
+                    i.setStartI(startI);
+                }
+            }
+            optimizeFirstElement(intervals);
+            Collections.sort(preparedIntervalsList);
+        }
         return preparedIntervalsList;
     }
 

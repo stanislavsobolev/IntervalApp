@@ -41,7 +41,7 @@ public class Interval implements Comparable<Interval> {
     }
 
     public String toString() {
-        return String.valueOf(startI) + " " + String.valueOf(endI);
+        return String.valueOf(startI) + "_" + String.valueOf(endI);
     }
 
     public boolean equals(Object pair) {
@@ -49,6 +49,6 @@ public class Interval implements Comparable<Interval> {
     }
 
     public int hashcode() {
-        return Integer.valueOf(this.toString().replaceAll(" ", ""));
+        return Integer.valueOf(this.toString().replaceAll("_", ""));
     }
 }
