@@ -1,6 +1,8 @@
 package com.sobolev.service;
 
 import com.sobolev.model.Interval;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.List;
 @Service
 @RequestScope
 public class IntervalDataService {
+
+    Logger log = LogManager.getLogger(IntervalDataService.class);
 
     private OptimizeIntervalsService optimizeService;
     private PostgreSQLConnectorService connectorService;
@@ -83,9 +87,64 @@ public class IntervalDataService {
             stmt.close();
             con.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return optimizedIntervals;
+    }
+
+    /**
+     * selectIntervals used to select list of intervals from database matching overlap condition with
+     * interval param limits
+     * @param interval shows limits of select query
+     */
+    public List<Interval> selectIntervals(Interval interval) {
+        List<Interval> selectedIntervals = new ArrayList<>();
+        if(interval != null && interval.getStartI() != null && interval.getStartI() != null) {
+            PreparedStatement stmt;
+            ResultSet rs;
+            Integer minimalInt = interval.getStartI();
+            Integer maximalInt = interval.getEndI();
+
+            try(Connection con = connectorService.establishConnectionToDB()) {
+                stmt = createPreparedStatement(con, SQL_SELECT + WHERE, minimalInt, maximalInt, minimalInt, maximalInt);
+                rs = stmt.executeQuery();
+                while (rs.next()) {
+                    selectedIntervals.add(new Interval(rs.getInt(1), rs.getInt(2)));
+                }
+            }
+            catch (Exception e) {
+                log.error(e);
+            }
+        }
+        return selectedIntervals;
+    }
+
+    /**
+     * removeIntervals method used to remove intervals
+     */
+    public void deleteIntervals(List<Interval> intervals) {
+        PreparedStatement stmt;
+
+        List<Interval> optimizedIntervals = optimizeService.optimize(intervals);
+
+        try (Connection con = connectorService.establishConnectionToDB()) {
+            if(intervals != null && !intervals.isEmpty()) {
+                optimizeService.verifyData(intervals);
+            }
+            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            con.setAutoCommit(false);
+            stmt = createPreparedStatement(con, SQL_DELETE + " WHERE start_i = ? AND end_i = ?");
+            for (Interval interval : optimizedIntervals) {
+                stmt.setInt(1, interval.getStartI());
+                stmt.setInt(2, interval.getEndI());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+            con.commit();
+        }
+        catch (Exception e) {
+            log.error(e);
+        }
     }
 
     /**
@@ -95,11 +154,13 @@ public class IntervalDataService {
      * @Important Performance can be increased if update data using /append service of IntervalApp
      */
     public void optimizeAllData() {
+        log.info("scheduled data optimization process started");
         PreparedStatement stmt;
         ResultSet rs;
         List<Interval> optimizedIntervals;
 
         try (Connection con = connectorService.establishConnectionToDB()) {
+            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             con.setAutoCommit(false);
             rs = createPreparedStatement(con, SQL_SELECT).executeQuery();
             optimizedIntervals = new ArrayList<>();
@@ -116,7 +177,7 @@ public class IntervalDataService {
             stmt.addBatch();
             con.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 

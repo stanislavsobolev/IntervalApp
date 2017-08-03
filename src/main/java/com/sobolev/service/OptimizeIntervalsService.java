@@ -18,13 +18,7 @@ public class OptimizeIntervalsService {
     public List<Interval> optimize(List<Interval> intervals) {
         preparedIntervalsList = new ArrayList<>();
         if(intervals != null && !intervals.isEmpty()) {
-            for (Interval i : intervals) {
-                if (i.getStartI() > i.getEndI()) {
-                    int startI = i.getEndI();
-                    i.setEndI(i.getStartI());
-                    i.setStartI(startI);
-                }
-            }
+            verifyData(intervals);
             optimizeFirstElement(intervals);
             Collections.sort(preparedIntervalsList);
         }
@@ -68,5 +62,16 @@ public class OptimizeIntervalsService {
         }
 
         return i2;
+    }
+
+    public List<Interval> verifyData(List<Interval> intervals) {
+            for (Interval i : intervals) {
+                if (i.getStartI() > i.getEndI()) {
+                    int startI = i.getEndI();
+                    i.setEndI(i.getStartI());
+                    i.setStartI(startI);
+                }
+            }
+        return intervals;
     }
 }
