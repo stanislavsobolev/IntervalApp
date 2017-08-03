@@ -9,4 +9,6 @@
 
     <context:component-scan base-package="com.sobolev"/>
 
+    <context:property-placeholder location="classpath*:scheduled.properties"/>
+
 </beans>

@@ -3,11 +3,16 @@ package com.sobolev.manager;
 import com.sobolev.service.PostgreSQLConnectorService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -17,12 +22,17 @@ import java.sql.SQLException;
 @Configuration
 @EnableAsync
 @EnableScheduling
+
 public class DatabaseConnectionManager {
+
+    @Autowired
+    Environment env;
 
     Logger log = LogManager.getLogger(DatabaseConnectionManager.class);
 
     private final int SECOND = 1000;
     private Integer failCounter = 0;
+
 
     PostgreSQLConnectorService connectorService;
     Connection con;

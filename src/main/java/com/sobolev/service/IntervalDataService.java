@@ -4,7 +4,6 @@ import com.sobolev.model.Interval;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -125,25 +124,23 @@ public class IntervalDataService {
     public void deleteIntervals(List<Interval> intervals) {
         PreparedStatement stmt;
 
-        List<Interval> optimizedIntervals = optimizeService.optimize(intervals);
+        if(intervals != null && !intervals.isEmpty()) {
+            optimizeService.verifyData(intervals);
 
-        try (Connection con = connectorService.establishConnectionToDB()) {
-            if(intervals != null && !intervals.isEmpty()) {
-                optimizeService.verifyData(intervals);
+            try (Connection con = connectorService.establishConnectionToDB()) {
+                con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                con.setAutoCommit(false);
+                stmt = createPreparedStatement(con, SQL_DELETE + " WHERE start_i = ? AND end_i = ?");
+                for (Interval interval : intervals) {
+                    stmt.setInt(1, interval.getStartI());
+                    stmt.setInt(2, interval.getEndI());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                con.commit();
+            } catch (Exception e) {
+                log.error(e);
             }
-            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            con.setAutoCommit(false);
-            stmt = createPreparedStatement(con, SQL_DELETE + " WHERE start_i = ? AND end_i = ?");
-            for (Interval interval : optimizedIntervals) {
-                stmt.setInt(1, interval.getStartI());
-                stmt.setInt(2, interval.getEndI());
-                stmt.addBatch();
-            }
-            stmt.executeBatch();
-            con.commit();
-        }
-        catch (Exception e) {
-            log.error(e);
         }
     }
 
