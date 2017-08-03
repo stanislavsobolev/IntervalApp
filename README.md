@@ -1,6 +1,6 @@
 # IntervalApp
 
-**Currently adding QueriesPool to guarantee query execution is database if offline!**
+**Currently adding QueriesPool to guarantee query execution if database is offline!**
 **2 more hours to implement required**
 **In case of any questions please feel free to contact me via skype: sobolev_stanislav**
 

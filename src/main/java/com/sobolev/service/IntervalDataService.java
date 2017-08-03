@@ -59,38 +59,42 @@ public class IntervalDataService {
      * In this case there will be no need to use periodic optimizeAllData() method
      */
     public List<Interval> insertNewIntegerIntervals(List<Interval> intervals) {
-        PreparedStatement stmt;
-        ResultSet rs;
+        List<Interval> optimizedIntervals = null;
+        if(queriesPool.isConnectionOk()) {
+            PreparedStatement stmt;
+            ResultSet rs;
 
-        queriesPool.incrementCounter();
+            optimizedIntervals = optimizeService.optimize(intervals);
+            Integer minimalInt = optimizedIntervals.get(0).getStartI();
+            Integer maximalInt = optimizedIntervals.get(optimizedIntervals.size() - 1).getEndI();
 
-        List<Interval> optimizedIntervals = optimizeService.optimize(intervals);
-        Integer minimalInt = optimizedIntervals.get(0).getStartI();
-        Integer maximalInt = optimizedIntervals.get(optimizedIntervals.size() - 1).getEndI();
+            try (Connection con = connectorService.establishConnectionToDB()) {
+                con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                con.setAutoCommit(false);
+                stmt = createPreparedStatement(con, SQL_SELECT + WHERE, minimalInt, maximalInt, minimalInt, maximalInt);
+                rs = stmt.executeQuery();
+                while (rs.next()) {
+                    optimizedIntervals.add(new Interval(rs.getInt(1), rs.getInt(2)));
+                }
 
-        try (Connection con = connectorService.establishConnectionToDB()) {
-            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            con.setAutoCommit(false);
-            stmt = createPreparedStatement(con, SQL_SELECT + WHERE, minimalInt, maximalInt, minimalInt, maximalInt);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                optimizedIntervals.add(new Interval(rs.getInt(1), rs.getInt(2)));
+                optimizedIntervals = optimizeService.optimize(optimizedIntervals);
+                createPreparedStatement(con, SQL_DELETE + WHERE, minimalInt, maximalInt, minimalInt, maximalInt).executeUpdate();
+
+                stmt = createPreparedStatement(con, SQL_INSERT);
+                for (Interval interval : optimizedIntervals) {
+                    stmt.setInt(1, interval.getStartI());
+                    stmt.setInt(2, interval.getEndI());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                stmt.close();
+                con.commit();
+            } catch (Exception e) {
+                log.error(e);
             }
-
-            optimizedIntervals = optimizeService.optimize(optimizedIntervals);
-            createPreparedStatement(con, SQL_DELETE + WHERE, minimalInt, maximalInt, minimalInt, maximalInt).executeUpdate();
-
-            stmt = createPreparedStatement(con, SQL_INSERT);
-            for (Interval interval : optimizedIntervals) {
-                stmt.setInt(1, interval.getStartI());
-                stmt.setInt(2, interval.getEndI());
-                stmt.addBatch();
-            }
-            stmt.executeBatch();
-            stmt.close();
-            con.commit();
-        } catch (Exception e) {
-            log.error(e);
+        }
+        if(!queriesPool.isConnectionOk()) {
+            queriesPool.setAppendIntervals(intervals);
         }
         return optimizedIntervals;
     }
@@ -126,26 +130,32 @@ public class IntervalDataService {
      * removeIntervals method used to remove intervals
      */
     public void deleteIntervals(List<Interval> intervals) {
-        PreparedStatement stmt;
+        if(queriesPool.isConnectionOk()) {
+            PreparedStatement stmt;
 
-        if(intervals != null && !intervals.isEmpty()) {
-            optimizeService.verifyData(intervals);
+            if(intervals != null && !intervals.isEmpty()) {
+                optimizeService.verifyData(intervals);
 
-            try (Connection con = connectorService.establishConnectionToDB()) {
-                con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                con.setAutoCommit(false);
-                stmt = createPreparedStatement(con, SQL_DELETE + " WHERE start_i = ? AND end_i = ?");
-                for (Interval interval : intervals) {
-                    stmt.setInt(1, interval.getStartI());
-                    stmt.setInt(2, interval.getEndI());
-                    stmt.addBatch();
+                try (Connection con = connectorService.establishConnectionToDB()) {
+                    con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                    con.setAutoCommit(false);
+                    stmt = createPreparedStatement(con, SQL_DELETE + " WHERE start_i = ? AND end_i = ?");
+                    for (Interval interval : intervals) {
+                        stmt.setInt(1, interval.getStartI());
+                        stmt.setInt(2, interval.getEndI());
+                        stmt.addBatch();
+                    }
+                    stmt.executeBatch();
+                    con.commit();
+                } catch (Exception e) {
+                    log.error(e);
                 }
-                stmt.executeBatch();
-                con.commit();
-            } catch (Exception e) {
-                log.error(e);
             }
         }
+        if(!queriesPool.isConnectionOk()) {
+            queriesPool.setDeleteIntervals(intervals);
+        }
+
     }
 
     /**

@@ -1,9 +1,11 @@
 package com.sobolev.manager;
 
+import com.sobolev.pool.QueriesPool;
 import com.sobolev.service.IntervalDataService;
 import com.sobolev.service.OptimizeIntervalsService;
 import com.sobolev.service.PostgreSQLConnectorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
