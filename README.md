@@ -2,6 +2,7 @@
 
 **Currently adding QueriesPool to guarantee query execution is database if offline!**
 **2 more hours to implement required**
+**In case of any questions please feel free to contact me via skype: sobolev_stanislav**
 --------------
 
 This is an application for optimizing integer intervals stored in database.
