@@ -1,5 +1,7 @@
 # IntervalApp
 
+**Currently adding QueriesPool to guarantee query execution is database if offline!**
+**2 more hours to implement required**
 --------------
 
 This is an application for optimizing integer intervals stored in database.
