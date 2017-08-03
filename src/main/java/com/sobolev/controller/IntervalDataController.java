@@ -19,9 +19,9 @@ public class IntervalDataController {
 
     WebApplicationContext applicationContext;
 
-    @RequestMapping(value = "/subscribe", method = RequestMethod.POST )
+    @RequestMapping(value = "/append", method = RequestMethod.POST )
     public void subscribe(@RequestBody List<Interval> intervals) throws IOException {
-        log.info("performing subscribe request: " + intervals.size() + " intervals");
+        log.info("performing append request: " + intervals.size() + " intervals");
         ((IntervalDataService)applicationContext.getBean("intervalDataService")).insertNewIntegerIntervals(intervals);
     }
 

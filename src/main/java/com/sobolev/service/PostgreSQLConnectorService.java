@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.sql.*;
 
 @Service
-@Scope(value = "prototype")
 @RequestScope
 public class PostgreSQLConnectorService {
 

@@ -1,2 +1,2 @@
-java\IntervalTest.class
-java\OptimizeIntervalsServiceTest.class
+com\sobolev\OptimizeIntervalsServiceTest.class
+com\sobolev\IntervalTest.class

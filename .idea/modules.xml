@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MavenProject.iml" filepath="$PROJECT_DIR$/MavenProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IntervalApp.iml" filepath="$PROJECT_DIR$/IntervalApp.iml" />
     </modules>
   </component>
 </project>

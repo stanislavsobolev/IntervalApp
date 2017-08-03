@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="IntervalApp:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="IntervalApp.war">
+      <element id="artifact" artifact-name="IntervalApp:war exploded" />
+    </root>
+  </artifact>
+</component>

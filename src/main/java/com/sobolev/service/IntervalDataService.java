@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Scope(value = "prototype")
 @RequestScope
 public class IntervalDataService {
 
@@ -24,6 +23,11 @@ public class IntervalDataService {
     private final String SQL_INSERT = "INSERT INTO test_interval VALUES(?, ?)";
 
     public IntervalDataService() {
+    }
+
+    public IntervalDataService(OptimizeIntervalsService optimizeService, PostgreSQLConnectorService connectorService) {
+        this.optimizeService = optimizeService;
+        this.connectorService = connectorService;
     }
 
     /**
@@ -46,7 +50,7 @@ public class IntervalDataService {
      * 3. INSERT optimized list into DB<p>
      *
      * @Note Interval list in DB will be always optimized if third-party applications
-     * use /interval/subscribe of IntervalApp method instead of updating data by themselves directly
+     * use /interval/append of IntervalApp method instead of updating data by themselves directly
      * In this case there will be no need to use periodic optimizeAllData() method
      */
     public List<Interval> insertNewIntegerIntervals(List<Interval> intervals) {
@@ -85,10 +89,10 @@ public class IntervalDataService {
     }
 
     /**
-     * We assume that third-party applications may update Intervals data directly, avoiding /subscribe service
+     * We assume that third-party applications may update Intervals data directly, avoiding /append service
      * And to guarantee data optimization application will periodically call optimizeAllData() method
      *<p>
-     * @Important Performance can be increased if update data using /subscribe service of IntervalApp
+     * @Important Performance can be increased if update data using /append service of IntervalApp
      */
     public void optimizeAllData() {
         PreparedStatement stmt;

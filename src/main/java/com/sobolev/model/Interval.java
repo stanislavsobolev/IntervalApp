@@ -1,5 +1,11 @@
 package com.sobolev.model;
 
+/**
+ * Basic class representing interval
+ *
+ * Includes both model and dao logic, according to task and security requirements
+ * there is no need to implement separate model and dao classes
+ */
 public class Interval implements Comparable<Interval> {
     private Integer startI;
     private Integer endI;
