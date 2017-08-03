@@ -1,6 +1,7 @@
 package com.sobolev.service;
 
 import com.sobolev.model.Interval;
+import com.sobolev.pool.QueriesPool;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class IntervalDataService {
 
     private OptimizeIntervalsService optimizeService;
     private PostgreSQLConnectorService connectorService;
+    private QueriesPool queriesPool;
 
     private final String SQL_SELECT = "SELECT * FROM test_interval";
     private final String SQL_DELETE = "DELETE FROM test_interval";
@@ -59,6 +61,8 @@ public class IntervalDataService {
     public List<Interval> insertNewIntegerIntervals(List<Interval> intervals) {
         PreparedStatement stmt;
         ResultSet rs;
+
+        queriesPool.incrementCounter();
 
         List<Interval> optimizedIntervals = optimizeService.optimize(intervals);
         Integer minimalInt = optimizedIntervals.get(0).getStartI();
@@ -194,5 +198,10 @@ public class IntervalDataService {
     @Autowired
     public void setConnectorService(PostgreSQLConnectorService connectorService) {
         this.connectorService = connectorService;
+    }
+
+    @Autowired
+    public void setQueriesPool(QueriesPool queriesPool) {
+        this.queriesPool = queriesPool;
     }
 }
