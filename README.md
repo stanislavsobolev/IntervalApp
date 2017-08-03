@@ -36,8 +36,8 @@ Components table with logic explanations:
 |                              | Such an approach will allow to keep data always optimized.                       |
 |                              | If there is no such possibility and test_interval being modified                 |
 |                              | bypassing /interval/append service, IntervalsOptimizationManager used            |
-| DatabaseConnectionManager    | Scheduled to check db connection every minute. If timeout >= 10 minutes,         |
-|                              | will throw an Error and close application                                        |
+| DatabaseConnectionManager    | Scheduled to check db connection every minute. If timeout >= 10 minutes,         
+                               will throw an Error and close application                                        |
 | IntervalsOptimizationManager | Scheduled to optimize all data in database once per hour. Not recommended        |
 |                              | to use as it may decrease application performance. Use IntervalDataController    |
 |                              | instead.                                                                         |
