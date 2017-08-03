@@ -32,6 +32,7 @@ assuming it was possibly modified by third party applications
 to add new data by any application. This will guarantee that intervals will be always optimized.
 
 --------------
+
 **Application basics:**
 
 a. Application offer 4 methods to operate with test_interval table
@@ -52,6 +53,18 @@ By default it is called by *IntervalsOptimizationManager* once per hour automati
 c. Database connection manager will automatically check if connection to database exist, if
 no, after some time it will close application with error
 
+d. Database fault messages are being processed with Spring implicitly
+
+--------------
+
+**Suggested improvements:**
+
+1. Create connection pool instead of creating new connection each time for new transaction request
+Depends on number of transactions and amount of data
+2. To improve automatic data optimization process use LastModificationTime parameter to compare
+with scheduled data. If LastModificationTime differs that test_interval table was modified by
+side application and optimization process should be started
+3. Add authentication
 
 --------------
 
