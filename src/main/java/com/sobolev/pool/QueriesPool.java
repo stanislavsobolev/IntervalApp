@@ -1,12 +1,12 @@
 package com.sobolev.pool;
 
 import com.sobolev.model.Interval;
+import com.sobolev.model.Query;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Service
 @Scope("singleton")
@@ -15,9 +15,12 @@ public class QueriesPool {
     private List<Interval> appendIntervals;
     private List<Interval> deleteIntervals;
 
+    private Queue<Query> queries;
+
     public QueriesPool() {
         appendIntervals = new CopyOnWriteArrayList<>();
         deleteIntervals = new CopyOnWriteArrayList<>();
+        queries = new ConcurrentLinkedQueue<>();
     }
 
     public boolean isConnectionOk() {
@@ -43,5 +46,13 @@ public class QueriesPool {
 
     public List<Interval> getDeleteIntervals() {
         return deleteIntervals;
+    }
+
+    public Queue<Query> getQueries() {
+        return queries;
+    }
+
+    public void addQuery(Query query) {
+        this.queries.add(query);
     }
 }

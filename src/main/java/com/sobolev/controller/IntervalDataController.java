@@ -22,7 +22,7 @@ public class IntervalDataController {
     @RequestMapping(value = "/append", method = RequestMethod.POST )
     public List<Interval> appendIntervals(@RequestBody List<Interval> intervals) throws IOException {
         log.info("Performing append request: " + intervals.size() + " intervals");
-        return ((IntervalDataService)applicationContext.getBean("intervalDataService")).insertNewIntegerIntervals(intervals);
+        return ((IntervalDataService)applicationContext.getBean("intervalDataService")).appendIntervals(intervals);
     }
 
     @RequestMapping(value = "/select", method = RequestMethod.POST )

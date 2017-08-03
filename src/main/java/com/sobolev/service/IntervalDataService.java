@@ -1,6 +1,8 @@
 package com.sobolev.service;
 
+import com.sobolev.enums.QueryType;
 import com.sobolev.model.Interval;
+import com.sobolev.model.Query;
 import com.sobolev.pool.QueriesPool;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -58,7 +60,7 @@ public class IntervalDataService {
      * use /interval/append of IntervalApp method instead of updating data by themselves directly
      * In this case there will be no need to use periodic optimizeAllData() method
      */
-    public List<Interval> insertNewIntegerIntervals(List<Interval> intervals) {
+    public List<Interval> appendIntervals(List<Interval> intervals) {
         List<Interval> optimizedIntervals = null;
         if(queriesPool.isConnectionOk()) {
             PreparedStatement stmt;
@@ -94,7 +96,7 @@ public class IntervalDataService {
             }
         }
         if(!queriesPool.isConnectionOk()) {
-            queriesPool.setAppendIntervals(optimizeService.optimize(intervals));
+            queriesPool.getQueries().add(new Query(intervals, QueryType.APPEND));
         }
         return optimizedIntervals;
     }
@@ -153,9 +155,8 @@ public class IntervalDataService {
             }
         }
         if(!queriesPool.isConnectionOk()) {
-            queriesPool.setDeleteIntervals(intervals);
+            queriesPool.getQueries().add(new Query(intervals, QueryType.DELETE));
         }
-
     }
 
     /**

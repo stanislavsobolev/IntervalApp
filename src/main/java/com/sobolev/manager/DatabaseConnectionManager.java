@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,17 +28,13 @@ import java.util.List;
 @EnableScheduling
 public class DatabaseConnectionManager {
 
-    @Autowired
-    Environment env;
-
-    private QueriesPool queriesPool;
+    private Integer failCounter = 0;
+    private final int SECOND = 1000;
 
     Logger log = LogManager.getLogger(DatabaseConnectionManager.class);
 
-    private final int SECOND = 1000;
-    private Integer failCounter = 0;
-
     PostgreSQLConnectorService connectorService;
+    private QueriesPool queriesPool;
     Connection con;
 
     public DatabaseConnectionManager() {
@@ -66,12 +61,6 @@ public class DatabaseConnectionManager {
             if (con.isValid(SECOND)) {
                 queriesPool.setConnectionOk(true);
                 failCounter = 0;
-                if(queriesPool.getAppendIntervals() != null && !queriesPool.getAppendIntervals().isEmpty()) {
-                    handleQueriesPoolAppend();
-                }
-                if(queriesPool.getDeleteIntervals() != null && !queriesPool.getDeleteIntervals().isEmpty()) {
-                    handleQueriesPoolDelete();
-                }
             }
             if (!con.isValid(SECOND)) {
                 queriesPool.setConnectionOk(false);
@@ -85,30 +74,6 @@ public class DatabaseConnectionManager {
             log.error("Database connection timeout reached. Closing application");
             throw new Error();
         }
-    }
-
-    private void handleQueriesPoolDelete() {
-        List<Interval> handledDeleteIntervals;
-        synchronized (queriesPool) {
-            handledDeleteIntervals = new ArrayList<>();
-            for(Interval i : queriesPool.getDeleteIntervals()) {
-                handledDeleteIntervals.add(new Interval(i));
-            }
-            queriesPool.getDeleteIntervals().clear();
-        }
-        new IntervalDataService(new OptimizeIntervalsService(), new PostgreSQLConnectorService()).deleteIntervals(handledDeleteIntervals);
-    }
-
-    private void handleQueriesPoolAppend() {
-        List<Interval> handledAppendIntervals;
-        synchronized (queriesPool) {
-            handledAppendIntervals = new ArrayList<>();
-            for(Interval i : queriesPool.getAppendIntervals()) {
-                handledAppendIntervals.add(new Interval(i));
-            }
-            queriesPool.getAppendIntervals().clear();
-        }
-        new IntervalDataService(new OptimizeIntervalsService(), new PostgreSQLConnectorService()).insertNewIntegerIntervals(handledAppendIntervals);
     }
 
     @Autowired
