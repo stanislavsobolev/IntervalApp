@@ -21,19 +21,19 @@ public class IntervalDataController {
 
     @RequestMapping(value = "/append", method = RequestMethod.POST )
     public List<Interval> appendIntervals(@RequestBody List<Interval> intervals) throws IOException {
-        log.info("performing append request: " + intervals.size() + " intervals");
+        log.info("Performing append request: " + intervals.size() + " intervals");
         return ((IntervalDataService)applicationContext.getBean("intervalDataService")).insertNewIntegerIntervals(intervals);
     }
 
     @RequestMapping(value = "/select", method = RequestMethod.POST )
     public List<Interval> selectIntervals(@RequestBody Interval interval) throws IOException {
-        log.info("performing select request: searching for [" + interval.getStartI() + ", " + interval.getEndI() + "] " + " limits");
+        log.info("Performing select request: searching for [" + interval.getStartI() + ", " + interval.getEndI() + "] " + " limits");
         return ((IntervalDataService)applicationContext.getBean("intervalDataService")).selectIntervals(interval);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE )
     public void deleteIntervals(@RequestBody List<Interval> intervals) throws IOException {
-        log.info("performing delete request: removing " + intervals.size() + " intervals from database");
+        log.info("Performing delete request: removing " + intervals.size() + " intervals from database");
         ((IntervalDataService)applicationContext.getBean("intervalDataService")).deleteIntervals(intervals);
     }
 
