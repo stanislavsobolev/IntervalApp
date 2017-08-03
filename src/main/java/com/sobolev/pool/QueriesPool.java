@@ -12,14 +12,9 @@ import java.util.concurrent.*;
 @Scope("singleton")
 public class QueriesPool {
     private boolean isConnectionOk;
-    private List<Interval> appendIntervals;
-    private List<Interval> deleteIntervals;
-
     private Queue<Query> queries;
 
     public QueriesPool() {
-        appendIntervals = new CopyOnWriteArrayList<>();
-        deleteIntervals = new CopyOnWriteArrayList<>();
         queries = new ConcurrentLinkedQueue<>();
     }
 
@@ -29,23 +24,6 @@ public class QueriesPool {
 
     public void setConnectionOk(boolean connectionOk) {
         isConnectionOk = connectionOk;
-    }
-
-    public synchronized void setAppendIntervals(List<Interval> intervals) {
-        appendIntervals.addAll(intervals);
-    }
-
-    public List<Interval> getAppendIntervals() {
-        return appendIntervals;
-    }
-
-    public synchronized void setDeleteIntervals(List<Interval> intervals) {
-        deleteIntervals.addAll(intervals);
-
-    }
-
-    public List<Interval> getDeleteIntervals() {
-        return deleteIntervals;
     }
 
     public Queue<Query> getQueries() {

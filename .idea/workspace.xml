@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c66729cf-4a6e-4666-8d43-0ca253de7744" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/enums/QueryType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/manager/QueriesPoolHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/model/Query.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sobolev/controller/IntervalDataController.java" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/controller/IntervalDataController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sobolev/manager/DatabaseConnectionManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/manager/DatabaseConnectionManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/sobolev/service/IntervalDataService.java" afterPath="$PROJECT_DIR$/src/main/java/com/sobolev/service/IntervalDataService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/scheduled.properties" afterPath="$PROJECT_DIR$/src/main/resources/scheduled.properties" />
     </list>
     <ignored path="MavenProject.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="QueriesPoolHandler.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="QueriesPoolHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/manager/QueriesPoolHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4151329">
-              <caret line="38" column="33" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="33" column="38" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1153#1154#0" expanded="true" />
@@ -84,17 +76,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="QueriesPool.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="QueriesPool.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="56" column="5" selection-start-line="56" selection-start-column="5" selection-end-line="56" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.32515338">
+              <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1302#1303#0" expanded="true" />
-                <element signature="e#1332#1333#0" expanded="true" />
-                <element signature="e#1373#1374#0" expanded="true" />
-                <element signature="e#1412#1413#0" expanded="true" />
+                <element signature="e#454#455#0" expanded="true" />
+                <element signature="e#672#673#0" expanded="true" />
+                <element signature="e#702#703#0" expanded="true" />
+                <element signature="e#743#744#0" expanded="true" />
+                <element signature="e#782#783#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -197,11 +190,11 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/resources/scheduled.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/sobolev/enums/QueryType.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sobolev/model/Query.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sobolev/manager/QueriesPoolHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sobolev/service/IntervalDataService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/sobolev/manager/DatabaseConnectionManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java" />
       </list>
     </option>
   </component>
@@ -1613,7 +1606,7 @@
       <workItem from="1501744051635" duration="4933000" />
       <workItem from="1501749730408" duration="13892000" />
       <workItem from="1501764214642" duration="13999000" />
-      <workItem from="1501797069419" duration="4954000" />
+      <workItem from="1501797069419" duration="5112000" />
     </task>
     <servers />
   </component>
@@ -1629,11 +1622,11 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="242755000" />
+    <option name="totallyTimeSpent" value="242913000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1644,7 +1637,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1607717" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39302325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39302325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2454448" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -2104,20 +2097,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="5" selection-start-line="56" selection-start-column="5" selection-end-line="56" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1302#1303#0" expanded="true" />
-            <element signature="e#1332#1333#0" expanded="true" />
-            <element signature="e#1373#1374#0" expanded="true" />
-            <element signature="e#1412#1413#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/manager/DatabaseConnectionManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2147,8 +2126,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/manager/QueriesPoolHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4151329">
-          <caret line="38" column="33" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="38" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1153#1154#0" expanded="true" />
@@ -2163,6 +2142,21 @@
             <element signature="e#2224#2225#0" expanded="true" />
             <element signature="e#2306#2307#0" expanded="true" />
             <element signature="e#2352#2353#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/sobolev/pool/QueriesPool.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32515338">
+          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#454#455#0" expanded="true" />
+            <element signature="e#672#673#0" expanded="true" />
+            <element signature="e#702#703#0" expanded="true" />
+            <element signature="e#743#744#0" expanded="true" />
+            <element signature="e#782#783#0" expanded="true" />
           </folding>
         </state>
       </provider>
