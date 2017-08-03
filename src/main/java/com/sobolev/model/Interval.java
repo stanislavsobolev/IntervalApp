@@ -18,6 +18,11 @@ public class Interval implements Comparable<Interval> {
         this.endI = endI;
     }
 
+    public Interval(Interval interval) {
+        this.startI = interval.getStartI();
+        this.endI = interval.getEndI();
+    }
+
     public int compareTo(Interval i) {
         if(this.hashcode() < i.hashcode()) return -1;
         if(this.hashCode() > i.hashcode()) return 1;

@@ -94,7 +94,7 @@ public class IntervalDataService {
             }
         }
         if(!queriesPool.isConnectionOk()) {
-            queriesPool.setAppendIntervals(intervals);
+            queriesPool.setAppendIntervals(optimizeService.optimize(intervals));
         }
         return optimizedIntervals;
     }

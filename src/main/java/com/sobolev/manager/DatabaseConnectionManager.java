@@ -65,8 +65,13 @@ public class DatabaseConnectionManager {
         try {
             if (con.isValid(SECOND)) {
                 queriesPool.setConnectionOk(true);
-                handleQueriesPool();
                 failCounter = 0;
+                if(queriesPool.getAppendIntervals() != null && !queriesPool.getAppendIntervals().isEmpty()) {
+                    handleQueriesPoolAppend();
+                }
+                if(queriesPool.getDeleteIntervals() != null && !queriesPool.getDeleteIntervals().isEmpty()) {
+                    handleQueriesPoolDelete();
+                }
             }
             if (!con.isValid(SECOND)) {
                 queriesPool.setConnectionOk(false);
@@ -82,17 +87,28 @@ public class DatabaseConnectionManager {
         }
     }
 
-    private void handleQueriesPool() {
-        List<Interval> handledAppendIntervals;
+    private void handleQueriesPoolDelete() {
         List<Interval> handledDeleteIntervals;
         synchronized (queriesPool) {
-            handledAppendIntervals = new ArrayList<>(queriesPool.getAppendIntervals());
-            queriesPool.getAppendIntervals().clear();
-            handledDeleteIntervals = new ArrayList<>(queriesPool.getDeleteIntervals());
+            handledDeleteIntervals = new ArrayList<>();
+            for(Interval i : queriesPool.getDeleteIntervals()) {
+                handledDeleteIntervals.add(new Interval(i));
+            }
             queriesPool.getDeleteIntervals().clear();
         }
-        new IntervalDataService(new OptimizeIntervalsService(), new PostgreSQLConnectorService()).insertNewIntegerIntervals(handledAppendIntervals);
         new IntervalDataService(new OptimizeIntervalsService(), new PostgreSQLConnectorService()).deleteIntervals(handledDeleteIntervals);
+    }
+
+    private void handleQueriesPoolAppend() {
+        List<Interval> handledAppendIntervals;
+        synchronized (queriesPool) {
+            handledAppendIntervals = new ArrayList<>();
+            for(Interval i : queriesPool.getAppendIntervals()) {
+                handledAppendIntervals.add(new Interval(i));
+            }
+            queriesPool.getAppendIntervals().clear();
+        }
+        new IntervalDataService(new OptimizeIntervalsService(), new PostgreSQLConnectorService()).insertNewIntegerIntervals(handledAppendIntervals);
     }
 
     @Autowired

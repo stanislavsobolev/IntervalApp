@@ -1,7 +1,5 @@
 # IntervalApp
 
-**Currently adding QueriesPool to guarantee query execution if database is offline!**
-**2 more hours to implement required**
 **In case of any questions please feel free to contact me via skype: sobolev_stanislav**
 
 --------------
@@ -30,9 +28,13 @@ It is recommended to use Authentication layer in real case.
 service with intervals list data to optimize/add it to database
 7. Send POST request to */interval/select* service with single interval to select all overlapping intervals from table
 8. Send DELETE request to */interval/delete* service with intervals list data to remove fully matching intervals from table
+9. In case connection to database is missing, requests will be gathered into QueriesPool.
+DatabaseConnectionManager will check connection every 15 seconds, and if connection restored,
+Intervals stored in QueriesPool will be sent to database
 9. Every 1 hour optimization process will be started automatically for all database
-assuming it was possibly modified by third party applications
-10. Both ways to modify data are correct. However, it is recommended to use single */interval/append* entry point
+assuming it was possibly modified by third party applications. Automatic optimization process can be 
+turned off by changing *run.scheduled.optimization* parameter to false in *scheduled.properties* file
+11. Both ways to modify data are correct. However, it is recommended to use single */interval/append* entry point
 to add new data by any application. This will guarantee that intervals will be always optimized.
 
 --------------
@@ -50,25 +52,19 @@ any application which is going to modify test_interval table
 This service support concurrent interactions, every operation is transactional and 
 locks set of table rows until transaction ends
 
-b. *optimizeAllData* should be used if we assuming that third party application will access and modify 
+b. In case of losing connection to database, all Intervals will be gathered in QueriesPool
+They will be of 2 categories: 
+- Append intervals
+- Delete intervals
+When connection restored, DatabaseConnectionManager will send handle requests to finish append and delete operations
+for stored intervals. If connection not restored for quite long (10 minutes by default), application will be closed with error
+
+c. *optimizeAllData* should be used if we assuming that third party application will access and modify 
 test_interval table bypassing */interval* service
 By default it is called by *IntervalsOptimizationManager* once per hour automatically
 
-c. Database connection manager will automatically check if connection to database exist, if
-no, after some time it will close application with error
-
 d. Database fault messages are being processed with Spring implicitly
 
---------------
-
-**Suggested improvements:**
-
-1. Create connection pool instead of creating new connection each time for new transaction request
-Depends on number of transactions and amount of data
-2. To improve automatic data optimization process use LastModificationTime parameter to compare
-with scheduled data. If LastModificationTime differs that test_interval table was modified by
-side application and optimization process should be started
-3. Add authentication
 
 --------------
 
@@ -101,7 +97,8 @@ side application and optimization process should be started
 |                              | was potentially modified by third party applications                             |
 | OptimizeIntervalsService     | Support class providing optimization logic                                       |
 | PostgreSQLConnectorService   | Support class providing db connection                                            |
-
+| QueriesPool                  | Store Intervals for Append and Delete operations if connection with db lost      |
+|                              | Will automatically perform both operations when connection restored              | 
 
 
 **In case of any questions please feel free to contact me via Skype:**
