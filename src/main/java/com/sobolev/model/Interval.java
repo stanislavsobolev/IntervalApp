@@ -54,6 +54,6 @@ public class Interval implements Comparable<Interval> {
     }
 
     public int hashcode() {
-        return Integer.valueOf(this.toString().replaceAll("_", ""));
+        return (int) Long.parseLong(this.toString().replaceAll("_", ""));
     }
 }

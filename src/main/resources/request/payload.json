@@ -1,3 +1,7 @@
+// APPEND REQUEST: http://localhost:8080/interval/append
+// DELETE REQUEST: http://localhost:8080/interval/delete
+// SELECT REQUEST: http://localhost:8080/interval/select
+
 [
   {
     "startI": 10,
