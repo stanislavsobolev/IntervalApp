@@ -32,6 +32,12 @@ public class IntervalDataService {
     public IntervalDataService() {
     }
 
+    public IntervalDataService(QueriesPool queriesPool, OptimizeIntervalsService optimizeService, PostgreSQLConnectorService connectorService) {
+        this.optimizeService = optimizeService;
+        this.connectorService = connectorService;
+        this.queriesPool = queriesPool;
+    }
+
     public IntervalDataService(OptimizeIntervalsService optimizeService, PostgreSQLConnectorService connectorService) {
         this.optimizeService = optimizeService;
         this.connectorService = connectorService;

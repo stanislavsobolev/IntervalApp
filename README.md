@@ -53,9 +53,11 @@ This service support concurrent interactions, every operation is transactional a
 locks set of table rows until transaction ends
 
 b. In case of losing connection to database, all Intervals will be gathered in QueriesPool
-They will be of 2 categories: 
+They will be of 2 types: 
 - Append intervals
 - Delete intervals
+They are stored in concurrent Queue by FIFO principle: first incoming element
+will be transferred to database first
 When connection restored, DatabaseConnectionManager will send handle requests to finish append and delete operations
 for stored intervals. If connection not restored for quite long (10 minutes by default), application will be closed with error
 
@@ -87,7 +89,7 @@ d. Database fault messages are being processed with Spring implicitly
 |                              | instead.                                                                         |
 | Interval                     | Class describing interval data. Comparable.                                      |
 | IntervalDataService          | Service providing 4 intervals processing methods:                                |
-|                              | 1. insertNewIntegerIntervals(List<Interval> intervals) - will insert intervals   |
+|                              | 1. appendIntervals(List<Interval> intervals) - will insert intervals             |
 |                              | into test_interval table affecting limited number of rows. Uses transaction with |
 |                              | SERIALIZABLE isolation level                                                     |
 |                              | 2. selectIntervals(Interval interval) - select all intervals overlapping         |
@@ -98,7 +100,12 @@ d. Database fault messages are being processed with Spring implicitly
 | OptimizeIntervalsService     | Support class providing optimization logic                                       |
 | PostgreSQLConnectorService   | Support class providing db connection                                            |
 | QueriesPool                  | Store Intervals for Append and Delete operations if connection with db lost      |
-|                              | Will automatically perform both operations when connection restored              | 
+|                              | Will automatically perform both operations when connection restored              |
+| Query                        | Basic model representing pending query. Stores List<Interval> and QueryType      |
+| QueriesPoolManager           | Class scheduled to run handleQueriesPool() method once a minute to try to persist|
+|                              | Queries if connection to db is up                                                |
+| QueryType                    | Enum which represents 2 types of operations. Based on it, corresponding          |
+|                              | DataService method is called                                                     | 
 
 
 **In case of any questions please feel free to contact me via Skype:**

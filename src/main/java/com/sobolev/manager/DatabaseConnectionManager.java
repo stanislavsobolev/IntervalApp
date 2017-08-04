@@ -45,13 +45,13 @@ public class DatabaseConnectionManager {
     }
 
     /**
-     * This method will be executed automatically each 60 seconds to ensure connection
+     * This method will be executed automatically each 30 seconds to ensure connection
      * to database exist
      * <p>
-     * If there is no connection, failCounter will be incremented, and on failCounter >= 10
+     * If there is no connection, failCounter will be incremented, and on failCounter >= 20
      * method will throw Error and stop application
      */
-    @Scheduled(fixedDelay = 10 * SECOND)
+    @Scheduled(fixedDelay = 5 * SECOND)
     public void doConnectionCheck() {
         try {
             if (con == null || con.isClosed()) {
@@ -60,12 +60,12 @@ public class DatabaseConnectionManager {
         }
         catch (Exception e) {
             log.error(e);
-        }
-        finally {
             queriesPool.setConnectionOk(false);
             failCounter++;
             log.info("Cannot establish connection with database. Number of attempts: " + failCounter);
-            if (failCounter >= 3) {
+        }
+        finally {
+            if (failCounter >= 120) {
                 log.error("Database connection timeout reached. Closing application");
                 SpringApplication.exit(applicationContext);
             }

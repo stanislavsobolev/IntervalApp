@@ -4,15 +4,18 @@ import com.sobolev.enums.QueryType;
 import com.sobolev.model.Query;
 import com.sobolev.pool.QueriesPool;
 import com.sobolev.service.IntervalDataService;
+import com.sobolev.service.OptimizeIntervalsService;
 import com.sobolev.service.PostgreSQLConnectorService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.sql.Connection;
 
@@ -26,19 +29,25 @@ public class QueriesPoolManager {
 
     Logger log = LogManager.getLogger(DatabaseConnectionManager.class);
 
-    IntervalDataService dataService;
-    PostgreSQLConnectorService connectorService;
     private QueriesPool queriesPool;
-    Connection con;
 
+    /**
+     * QueriesPoolManager scheduled to call handleQueriesPool() method automatically
+     * once per minute
+     */
     @Scheduled(fixedDelay = 60 * SECOND)
     public void handleQueriesPool() {
         handleQueries();
     }
 
+    /**
+     * If connection to db established again and queries queue is not empty,
+     * QueriesPoolManager will call handleQueries() method.
+     */
     public void handleQueries() {
         if(queriesPool.isConnectionOk() && !queriesPool.getQueries().isEmpty()) {
             log.info("Connection to database restored. Started handling pending queries");
+            IntervalDataService dataService = new IntervalDataService(queriesPool, new OptimizeIntervalsService(), new PostgreSQLConnectorService());
             Query query = queriesPool.getQueries().poll();
             if(query.getQueryType() == QueryType.APPEND) {
                 dataService.appendIntervals(query.getIntervals());
@@ -50,15 +59,6 @@ public class QueriesPoolManager {
         }
     }
 
-    public PostgreSQLConnectorService getConnectorService() {
-        return connectorService;
-    }
-
-    @Autowired
-    public void setConnectorService(PostgreSQLConnectorService connectorService) {
-        this.connectorService = connectorService;
-    }
-
     public QueriesPool getQueriesPool() {
         return queriesPool;
     }
@@ -66,14 +66,5 @@ public class QueriesPoolManager {
     @Autowired
     public void setQueriesPool(QueriesPool queriesPool) {
         this.queriesPool = queriesPool;
-    }
-
-    public IntervalDataService getDataService() {
-        return dataService;
-    }
-
-    @Autowired
-    public void setDataService(IntervalDataService dataService) {
-        this.dataService = dataService;
     }
 }

@@ -11,9 +11,9 @@ public class Query {
 
     public Query(List<Interval> intervals, QueryType queryType) {
         if(intervals != null) {
-            intervals = new ArrayList<>();
+            this.intervals = new ArrayList<>();
             for(Interval i : intervals) {
-                intervals.add(new Interval(i));
+                this.intervals.add(new Interval(i));
             }
         }
         this.queryType = queryType;
