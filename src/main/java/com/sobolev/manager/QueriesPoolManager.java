@@ -20,7 +20,7 @@ import java.sql.Connection;
 @ComponentScan("com.sobolev")
 @EnableAsync
 @EnableScheduling
-public class QueriesPoolHandler {
+public class QueriesPoolManager {
 
     private final int SECOND = 1000;
 
@@ -38,6 +38,7 @@ public class QueriesPoolHandler {
 
     public void handleQueries() {
         if(queriesPool.isConnectionOk() && !queriesPool.getQueries().isEmpty()) {
+            log.info("Connection to database restored. Started handling pending queries");
             Query query = queriesPool.getQueries().poll();
             if(query.getQueryType() == QueryType.APPEND) {
                 dataService.appendIntervals(query.getIntervals());

@@ -8,11 +8,13 @@ import com.sobolev.service.PostgreSQLConnectorService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *@class DatabaseConnectionManager scheduled to check if connection to database exist
+ * @class DatabaseConnectionManager scheduled to check if connection to database exist
  */
 @Configuration
 @ComponentScan("com.sobolev")
@@ -33,6 +35,7 @@ public class DatabaseConnectionManager {
 
     Logger log = LogManager.getLogger(DatabaseConnectionManager.class);
 
+    WebApplicationContext applicationContext;
     PostgreSQLConnectorService connectorService;
     private QueriesPool queriesPool;
     Connection con;
@@ -48,36 +51,42 @@ public class DatabaseConnectionManager {
      * If there is no connection, failCounter will be incremented, and on failCounter >= 10
      * method will throw Error and stop application
      */
-    @Scheduled(fixedDelay = 15 * SECOND)
+    @Scheduled(fixedDelay = 10 * SECOND)
     public void doConnectionCheck() {
-        if (con == null) {
-            try {
+        try {
+            if (con == null || con.isClosed()) {
                 con = connectorService.establishConnectionToDB();
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+        }
+        catch (Exception e) {
+            log.error(e);
+        }
+        finally {
+            queriesPool.setConnectionOk(false);
+            failCounter++;
+            log.info("Cannot establish connection with database. Number of attempts: " + failCounter);
+            if (failCounter >= 3) {
+                log.error("Database connection timeout reached. Closing application");
+                SpringApplication.exit(applicationContext);
             }
         }
         try {
-            if (con.isValid(SECOND)) {
+            if (con != null && !con.isClosed() && con.isValid(SECOND)) {
                 queriesPool.setConnectionOk(true);
                 failCounter = 0;
             }
-            if (!con.isValid(SECOND)) {
-                queriesPool.setConnectionOk(false);
-                failCounter++;
-                log.info("Cannot establish connection with database. Number of attempts: " + failCounter);
-            }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (failCounter >= 40) {
-            log.error("Database connection timeout reached. Closing application");
-            throw new Error();
+            log.error(e);
         }
     }
 
     @Autowired
     public void setQueriesPool(QueriesPool queriesPool) {
         this.queriesPool = queriesPool;
+    }
+
+    @Autowired
+    public void setApplicationContext(WebApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }
