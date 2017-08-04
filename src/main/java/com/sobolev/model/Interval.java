@@ -24,8 +24,10 @@ public class Interval implements Comparable<Interval> {
     }
 
     public int compareTo(Interval i) {
-        if(this.hashcode() < i.hashcode()) return -1;
-        if(this.hashCode() > i.hashcode()) return 1;
+        long thisLong = Long.parseLong(this.toString().replaceAll("_", ""));
+        long iLong = Long.parseLong(i.toString().replaceAll("_", ""));
+        if(thisLong < iLong) return -1;
+        if(thisLong > iLong) return 1;
         else return 0;
     }
 
@@ -46,7 +48,7 @@ public class Interval implements Comparable<Interval> {
     }
 
     public String toString() {
-        return String.valueOf(startI) + "_" + String.valueOf(endI);
+        return String.valueOf(startI) + "_" + String.valueOf(endI).replaceAll("-", "");
     }
 
     public boolean equals(Object pair) {
