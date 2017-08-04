@@ -22,26 +22,28 @@ file and can be changed if needed
 3. PostgreSQLConnectorService contain hardcoded data to connect to db - DBMS values can be changed if needed - 
 it was made to simplify application showcase and implementation. 
 It is recommended to use Authentication layer in real case.
-4. Run main() method of com.sobolev.controller.IntervalsServiceDataPublisher class to start application
-5. Use payload.json in */resources/request* folder as an example to create REST request body
-6. Send POST request to */interval/append* (default value - *localhost:8080/interval/append*) 
+4. Application require only test_interval table
+5. Run main() method of com.sobolev.controller.IntervalsServiceDataPublisher class to start application
+6. Use payload.json in */resources/request* folder as an example to create REST request body
+7. Send POST request to */interval/append* (default value - *localhost:8080/interval/append*) 
 service with intervals list data to optimize/add it to database
-7. Send POST request to */interval/select* service with single interval to select all overlapping intervals from table
-8. Send DELETE request to */interval/delete* service with intervals list data to remove fully matching intervals from table
-9. In case connection to database is missing, requests will be gathered into QueriesPool.
+8. Send POST request to */interval/select* service with single interval to select all overlapping intervals from table
+9. Send DELETE request to */interval/delete* service with intervals list data to remove fully matching intervals from table
+10. In case connection to database is missing, requests will be gathered into QueriesPool.
 DatabaseConnectionManager will check connection every 15 seconds, and if connection restored,
 Intervals stored in QueriesPool will be sent to database
-9. Every 1 hour optimization process will be started automatically for all database
+11. Every 1 hour optimization process will be started automatically for all database
 assuming it was possibly modified by third party applications. Automatic optimization process can be 
-turned off by changing *run.scheduled.optimization* parameter to false in *scheduled.properties* file
-11. Both ways to modify data are correct. However, it is recommended to use single */interval/append* entry point
+turned off/on by changing *run.scheduled.optimization* parameter to false/true respectively in *scheduled.properties* file
+Default value is false
+12. Both ways to modify data are correct. However, it is recommended to use single */interval/append* entry point
 to add new data by any application. This will guarantee that intervals will be always optimized.
 
 --------------
 
 **Application basics:**
 
-a. Application offer 4 methods to operate with test_interval table
+- Application offer 4 methods to operate with test_interval table
 3 of them recommended to use:
 1. append to insert new intervals and optimize them
 2. select to get existing intervals
@@ -52,20 +54,29 @@ any application which is going to modify test_interval table
 This service support concurrent interactions, every operation is transactional and 
 locks set of table rows until transaction ends
 
-b. In case of losing connection to database, all Intervals will be gathered in QueriesPool
+- In case of losing connection to database, all Intervals will be gathered in QueriesPool
 They will be of 2 types: 
-- Append intervals
-- Delete intervals
+1. Append intervals
+2. Delete intervals
 They are stored in concurrent Queue by FIFO principle: first incoming element
 will be transferred to database first
 When connection restored, DatabaseConnectionManager will send handle requests to finish append and delete operations
 for stored intervals. If connection not restored for quite long (10 minutes by default), application will be closed with error
 
-c. *optimizeAllData* should be used if we assuming that third party application will access and modify 
+- test_interval table structure:
+```sql
+CREATE TABLE test_interval (
+start_i INT NOT NULL,
+end_i INT NOT NULL,
+CONSTRAINT end_gte_start CHECK (end_i>=start_i)
+);
+```
+
+- *optimizeAllData* should be used if we assuming that third party application will access and modify 
 test_interval table bypassing */interval* service
 By default it is called by *IntervalsOptimizationManager* once per hour automatically
 
-d. Database fault messages are being processed with Spring implicitly
+- Database fault messages are being processed with Spring implicitly
 
 
 --------------
